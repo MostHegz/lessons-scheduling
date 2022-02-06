@@ -13,14 +13,7 @@ export class LessonsService {
         return new Promise(async (resolve, reject) => {
             try {
                 // TODO: get user id from token and add recurring lessons
-                const existingLesson = await this.lessonsRepository.findLessonBetweenDates(
-                    addLessonDto.userId,
-                    addLessonDto.startAt,
-                    addLessonDto.endAt
-                );
-                if (existingLesson) {
-                    return reject(new HttpException({ message: ErrorMessage.LessonExistsAtThisTime }, HttpStatus.BAD_REQUEST));
-                }
+
                 const addedLesson = await this.lessonsRepository.addLesson(addLessonDto);
                 resolve(addedLesson);
             } catch (error) {

@@ -19,36 +19,4 @@ export class LessonsRepository {
         const newLesson = new this.lessonModel(addLessonDto);
         return newLesson.save();
     }
-
-    async findLessonBetweenDates(userId: number, startDate: Date, endDate: Date): Promise<Lesson> {
-        return this.lessonModel.findOne(
-            {
-                $or: [
-
-                    {
-                        startAt: {
-                            $gte: startDate,
-                            $lt: endDate
-                        }
-                    },
-                    {
-                        endAt: {
-                            $gte: startDate,
-                            $lt: endDate
-                        }
-                    },
-                    {
-                        startAt: {
-                            $lt: startDate
-                        },
-                        endAt: {
-                            $gte: endDate
-                        }
-                    }
-                ],
-                userId: userId
-            }
-        ).exec();
-    }
-
 }
