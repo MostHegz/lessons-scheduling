@@ -10,4 +10,13 @@ export class Constants {
     public static API_AUTH_BEARER_FORMAT = 'JWT';
     public static API_AUTH_PATH = 'header';
     public static API_AUTH_NAME = 'Authorization';
+
+    // Paths
+    public static LESSON = 'lesson';
+    public static LESSON_TAG = 'Lesson';
+
+    // CRUD Paths
+    public static ADD_PATH = 'add';
+    public static UPDATE_PATH = 'update';
+    public static BY_ID_PATH = '/:id';
 }

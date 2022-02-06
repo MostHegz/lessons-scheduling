@@ -1,4 +1,5 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 @Schema({ _id: false, timestamps: false })
 export class RepeatedIntervals extends Document {
