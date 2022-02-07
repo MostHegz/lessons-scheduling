@@ -8,8 +8,22 @@ import { LessonsService } from './lessons.service';
 
 @Module({
   imports: [
+    MongooseModule.forFeatureAsync([
+      {
+        name: Lesson.name,
+        useFactory: () => {
+          const schema = LessonSchema;
+          schema.pre<Lesson>('save', function () {
+            const lesson = this;
+            if (lesson.repeatedIntervals?.length > 1) {
+              this.isRepeated = true;
+            }
+          });
+          return schema;
+        },
+      },
+    ]),
     MongooseModule.forFeature([
-      { name: Lesson.name, schema: LessonSchema },
       { name: RepeatedIntervals.name, schema: RepeatedIntervalsSchema },
     ])
   ],

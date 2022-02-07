@@ -19,4 +19,8 @@ export class Constants {
     public static ADD_PATH = 'add';
     public static UPDATE_PATH = 'update';
     public static BY_ID_PATH = '/:id';
+
+    // Time intervalse
+    public static DAY_TIME_INTERVAL = 24 * 60 * 60 * 1000;
+    public static WEEK_TIME_INTERVAL = 7 * 24 * 60 * 60 * 1000;
 }

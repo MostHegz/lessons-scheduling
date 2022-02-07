@@ -13,12 +13,6 @@ export class Lesson extends Document {
     @Prop({ required: true })
     description: string;
 
-    @Prop({ required: true })
-    startAt: Date;
-
-    @Prop({ required: true })
-    endAt: Date;
-
     @Prop({ default: false })
     isRepeated: boolean;
 
