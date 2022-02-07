@@ -1,14 +1,18 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerCustomOptions, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { Constants } from './common/constants';
-import { SuccessResponseInterceptor } from './utilities/success-response.interceptor';
+import { SuccessResponseInterceptor } from './utilities';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.setGlobalPrefix('api');
   app.useGlobalInterceptors(new SuccessResponseInterceptor());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
   // TODO: Enable cors only for trusted frontend urls
   app.enableCors();
 
