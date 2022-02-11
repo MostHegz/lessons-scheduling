@@ -1,7 +1,7 @@
-import { RepeatedIntervalsInterface } from './repeated-intervals.interface';
+import { DateWithDurationInterface } from './date-exclusion.interface';
 import { SuccessResponseInterface } from './success-response.interface';
 
 export {
     SuccessResponseInterface,
-    RepeatedIntervalsInterface
+    DateWithDurationInterface
 };

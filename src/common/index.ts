@@ -1,6 +1,6 @@
 import { Constants } from './constants';
 import { ErrorMessage } from './error-message';
-import { MappedDays, RecurrenceType } from './recurrence';
+import { Days, RecurrenceType, RecurrenceTypeMapper } from './recurrence';
 import { SuccessMessage } from './success-message';
 
 export {
@@ -8,5 +8,6 @@ export {
     SuccessMessage,
     ErrorMessage,
     RecurrenceType,
-    MappedDays
+    Days,
+    RecurrenceTypeMapper
 };

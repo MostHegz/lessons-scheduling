@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsDate, IsDefined, IsEnum, IsNotEmpty, ValidateIf } from 'class-validator';
-import { ErrorMessage, RecurrenceType } from 'src/common';
-import { Days } from 'src/common/recurrence';
+import { Days, ErrorMessage, RecurrenceType } from 'src/common';
 import { IsGreaterThan } from 'src/utilities';
 
 export class AddLessonDto {
@@ -33,16 +32,16 @@ export class AddLessonDto {
     public description: string;
 
     @ApiProperty({
-        example: '2022-12-30T13:00:00.000Z',
-        description: 'Lesson start at',
+        example: '2022-01-30T13:00:00.000Z',
+        description: 'first lesson starts at',
         required: true
     })
     @IsDate({ message: ErrorMessage.LessonStartRequired })
     @Type(() => Date)
-    public startAt: Date;
+    public firstLessonStartsAt: Date;
 
     @ApiProperty({
-        example: '2022-12-30T14:00:00.000Z',
+        example: '3600000',
         description: 'Lesson end at',
         required: true
     })
@@ -51,15 +50,15 @@ export class AddLessonDto {
     public durationInMilliSeconds: number;
 
     @ApiProperty({
-        example: '2022-12-30T14:00:00.000Z',
-        description: 'Lesson end at',
+        example: '2022-02-28T14:00:00.000Z',
+        description: 'Lesson recurrence end at',
         required: true
     })
     @ValidateIf(input => input.recurrence !== RecurrenceType.None)
     @IsDate({ message: ErrorMessage.RecurrenceEndRequired })
-    @IsGreaterThan('startAt', { message: ErrorMessage.RecurrenceEndAfterEnd })
+    @IsGreaterThan('firstLessonStartsAt', { message: ErrorMessage.RecurrenceEndAfterEnd })
     @Type(() => Date)
-    public recurrenceEndAt: Date;
+    public lastLessonEndsAt: Date;
 
     @ApiProperty({
         example: RecurrenceType.Daily,
@@ -71,7 +70,7 @@ export class AddLessonDto {
     public recurrence: RecurrenceType = RecurrenceType.None;
 
     @ApiProperty({
-        example: [Days.Saturday],
+        example: [Days.Sunday],
         description: 'Lesson recurrence pattern in week',
         required: false,
         enum: [Days]
@@ -79,7 +78,7 @@ export class AddLessonDto {
     @ValidateIf(input => input.recurrence === RecurrenceType.Weekly)
     @IsArray()
     @IsEnum(Days, { each: true })
-    public days: Days[];
+    public recurrenceDays: Days[];
 
 }
 
