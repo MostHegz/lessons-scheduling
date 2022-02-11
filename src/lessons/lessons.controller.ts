@@ -43,6 +43,7 @@ export class LessonsController {
                 const rruleDates = new RRuleWithExcludedDates(
                     addedLesson.firstLessonStartsAt,
                     addedLesson.lastLessonEndsAt,
+                    addedLesson.editedDates,
                     addedLesson.excludedDates,
                     addedLesson.durationInMilliSeconds,
                     addedLesson.recurrenceDays,

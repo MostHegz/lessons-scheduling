@@ -1,27 +1,33 @@
-import RRule, { Frequency } from 'rrule';
+import { RRule, RRuleSet } from 'rrule';
 import { Days, RecurrenceType, RecurrenceTypeMapper } from 'src/common';
 import { DateWithDurationInterface } from 'src/interface';
-import { DateExclusion } from 'src/lessons/data/exclusion-date.schema';
+import { EditedDate } from 'src/lessons/data/edited-date.schema';
 
-export class RRuleWithExcludedDates extends RRule {
+export class RRuleWithExcludedDates extends RRuleSet {
 
     constructor(
-        private dtstart: Date,
+        dtstart: Date,
         private until: Date,
-        private excludedDates: DateExclusion[],
+        private editedDates: EditedDate[],
+        private excludedDates: Date[],
         private durationInMilliSeconds: number,
         private byweekday?: Days[],
         private recurrence?: RecurrenceType,
     ) {
-        super(
+        super();
+        this.rrule(new RRule(
             {
                 byweekday,
                 dtstart,
                 until,
                 freq: +RecurrenceTypeMapper[recurrence],
-            }
+            })
         );
+        for (const date of this.excludedDates) {
+            this.exdate(date);
+        }
     }
+
 
     public betweenWithExcluded(startAt: Date, endAt: Date): DateWithDurationInterface[] {
         const dates = this.between(startAt, endAt);
@@ -38,20 +44,14 @@ export class RRuleWithExcludedDates extends RRule {
     private mapDates(dates: Date[]): DateWithDurationInterface[] {
         const datesWithDurations: DateWithDurationInterface[] = [];
         for (const date of dates) {
-            const excludedDate = this.excludedDates.find(d => d.oldDate === date);
-            if (excludedDate) {
-                const dateWithDuration: DateWithDurationInterface = {
-                    date: excludedDate.newDate,
-                    durationInMilliSeconds: excludedDate.durationInMilliSeconds
-                };
-                datesWithDurations.push(dateWithDuration);
-            } else {
-                const dateWithDuration: DateWithDurationInterface = {
-                    date,
-                    durationInMilliSeconds: this.durationInMilliSeconds
-                };
-                datesWithDurations.push(dateWithDuration);
-            }
+            const dateWithDuration: DateWithDurationInterface = {
+                date,
+                durationInMilliSeconds: this.durationInMilliSeconds
+            };
+            datesWithDurations.push(dateWithDuration);
+        }
+        for (const date of this.editedDates) {
+            datesWithDurations.push(date);
         }
         return datesWithDurations;
     }

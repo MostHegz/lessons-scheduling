@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { DateExclusion, DateExclusionSchema } from './data/exclusion-date.schema';
+import { EditedDate, EditedDateSchema } from './data/edited-date.schema';
 import { Lesson, LessonSchema } from './data/lessons.schema';
 import { LessonsController } from './lessons.controller';
 import { LessonsService } from './lessons.service';
@@ -9,7 +9,7 @@ import { LessonsService } from './lessons.service';
   imports: [
     MongooseModule.forFeature([
       { name: Lesson.name, schema: LessonSchema },
-      { name: DateExclusion.name, schema: DateExclusionSchema },
+      { name: EditedDate.name, schema: EditedDateSchema },
     ])
   ],
   controllers: [LessonsController],
