@@ -1,8 +1,8 @@
-import { Body, Controller, Logger, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Constants } from 'src/common';
-import { AddLessonDto, UpdateLessonDto } from './dto/request';
-import { LessonResponse } from './dto/response';
+import { AddLessonDto, GetLessonsDto, UpdateLessonDto } from './dto/request';
+import { LessonListResponse, LessonResponse } from './dto/response';
 import { LessonsService } from './lessons.service';
 
 
@@ -38,5 +38,19 @@ export class LessonsController {
             throw error;
         }
     }
+
+    @Get(`${Constants.LESSONS}`)
+    @ApiOperation({ summary: 'get lessons between dates', tags: [Constants.LESSON] })
+    @ApiResponse({ status: 200, description: 'Lesson Retrieved', type: [LessonListResponse] })
+    async getLessonsBetweenDates(@Query() getLessonsDto: GetLessonsDto): Promise<LessonListResponse[]> {
+        try {
+            // TODO: get user from token and add it to the get lesson query
+            return this.lessonsService.getLessonsBetweenDates(getLessonsDto);
+        } catch (error) {
+            this.logger.error(error);
+            throw error;
+        }
+    }
+
 
 }

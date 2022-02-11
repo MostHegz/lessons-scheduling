@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ErrorMessage, LessonUpdateType, RecurrenceType } from 'src/common';
+import { BetweenDatesInterface } from 'src/interface';
 import { MapperHelper, RRuleWithExcludedDates } from 'src/utilities';
 import { Lesson } from './data/lessons.schema';
-import { AddLessonDto, UpdateLessonDto } from './dto/request';
-import { LessonResponse } from './dto/response';
+import { AddLessonDto, GetLessonsDto, UpdateLessonDto } from './dto/request';
+import { LessonListResponse, LessonResponse } from './dto/response';
 import { LessonRepository } from './lessons.repository';
 
 @Injectable()
@@ -73,6 +74,10 @@ export class LessonsService {
                         if (!foundDate) {
                             throw new HttpException({ key: ErrorMessage.LessonNotAtThisDate }, HttpStatus.NOT_FOUND);
                         }
+
+                        if (foundDate.date.getTime() > lesson.lastLessonEndsAt.getTime()) {
+                            lesson.lastLessonEndsAt = new Date(foundDate.date.getTime() + foundDate.durationInMilliSeconds);
+                        }
                         lesson.excludedDates.push(updateLessonDto.oldDate);
 
                         if (updateLessonDto.type === LessonUpdateType.Single) {
@@ -95,9 +100,20 @@ export class LessonsService {
         });
     }
 
+    public async getLessonsBetweenDates(getLessonsDto: GetLessonsDto): Promise<LessonListResponse[]> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const lessons = await this.lessonRepository.getLessonsBetweenDates(getLessonsDto);
+                const lessonsWithDates = this.mapLessonsToListResponse(lessons, getLessonsDto);
+                resolve(lessonsWithDates);
+            } catch (error) {
+                this.logger.error(error);
+                reject(error);
+            }
+        });
+    }
 
-    public mapLessonDates(lesson: Lesson): Lesson {
-
+    private mapLessonDates(lesson: Lesson, betweenDates?: BetweenDatesInterface): Lesson {
         if (lesson.recurrence === RecurrenceType.None) {
             lesson.occursAt = [{
                 date: lesson.firstLessonStartsAt,
@@ -113,9 +129,31 @@ export class LessonsService {
                 lesson.recurrenceDays,
                 lesson.recurrence
             );
-
-            lesson.occursAt = rruleDates.getAll();
+            if (betweenDates) {
+                lesson.occursAt = rruleDates.getBetween(betweenDates);
+            } else {
+                lesson.occursAt = rruleDates.getAll();
+            }
         }
         return lesson;
+    }
+
+    private mapLessonsToListResponse(lessons: Lesson[], betweenDates: BetweenDatesInterface): LessonListResponse[] {
+        const lessonsListResponse: LessonListResponse[] = [];
+        for (const lesson of lessons) {
+            const lessonWithDates = this.mapLessonDates(lesson, betweenDates);
+            for (const date of lessonWithDates.occursAt) {
+                const lessonListResponse: LessonListResponse = {
+                    id: lesson.id,
+                    title: lesson.title,
+                    description: lesson.description,
+                    recurrence: lesson.recurrence,
+                    startsAt: date.date,
+                    durationInMilliSeconds: date.durationInMilliSeconds
+                };
+                lessonsListResponse.push(lessonListResponse);
+            }
+        }
+        return lessonsListResponse;
     }
 }
