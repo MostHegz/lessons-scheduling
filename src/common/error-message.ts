@@ -17,5 +17,6 @@ export enum ErrorMessage {
     NewDateRequired = 'New date is required',
     StartDateRequired = 'Start date is required',
     EndDateRequired = 'End date is required',
+    DateToDeleteRequired = 'Date to be deleted is required',
     LessonNotAtThisDate = 'The lesson does not occur at this time',
 }

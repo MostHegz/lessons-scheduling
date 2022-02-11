@@ -37,7 +37,7 @@ export class UpdateLessonDto extends AddLessonDto {
         description: 'If editing a single recurrence date send the new date',
         required: true
     })
-    @IsOptional()
+    @ValidateIf(input => input.oldDate)
     @IsDate({ message: ErrorMessage.NewDateRequired })
     @Type(() => Date)
     public newDate: Date;
