@@ -14,6 +14,7 @@ export class Constants {
     // Paths
     public static LESSON = 'lesson';
     public static LESSON_TAG = 'Lesson';
+    public static LESSONS = 'lessons';
 
     // CRUD Paths
     public static ADD_PATH = 'add';

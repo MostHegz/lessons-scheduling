@@ -1,6 +1,6 @@
 import { RRule, RRuleSet } from 'rrule';
 import { Days, RecurrenceType, RecurrenceTypeMapper } from 'src/common';
-import { DateWithDurationInterface } from 'src/interface';
+import { BetweenDatesInterface, DateWithDurationInterface, ExpandedLessonsInterface } from 'src/interface';
 import { EditedDate } from 'src/lessons/data/edited-date.schema';
 
 export class RRuleWithExcludedDates extends RRuleSet {
@@ -41,7 +41,13 @@ export class RRuleWithExcludedDates extends RRuleSet {
         return datesWithDurations;
     }
 
-    private mapDates(dates: Date[]): DateWithDurationInterface[] {
+    public getBetween(betweenDates: BetweenDatesInterface): DateWithDurationInterface[] {
+        const dates = this.between(betweenDates.from, betweenDates.to);
+        const datesWithDurations = this.mapDates(dates, betweenDates);
+        return datesWithDurations;
+    }
+
+    private mapDates(dates: Date[], betweenDates?: BetweenDatesInterface): DateWithDurationInterface[] {
         const datesWithDurations: DateWithDurationInterface[] = [];
         for (const date of dates) {
             const dateWithDuration: DateWithDurationInterface = {
@@ -51,7 +57,12 @@ export class RRuleWithExcludedDates extends RRuleSet {
             datesWithDurations.push(dateWithDuration);
         }
         for (const date of this.editedDates) {
-            datesWithDurations.push(date);
+            const dateTimeStamp = date.date.getTime();
+            if (!betweenDates
+                || (dateTimeStamp > betweenDates.from.getTime()
+                    && dateTimeStamp < betweenDates.to.getTime())) {
+                datesWithDurations.push(date);
+            }
         }
         return datesWithDurations;
     }

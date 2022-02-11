@@ -56,7 +56,7 @@ export class AddLessonDto {
     })
     @ValidateIf(input => input.recurrence !== RecurrenceType.None)
     @IsDate({ message: ErrorMessage.RecurrenceEndRequired })
-    @IsGreaterThan('firstLessonStartsAt', { message: ErrorMessage.RecurrenceEndAfterEnd })
+    @IsGreaterThan('firstLessonStartsAt', { message: ErrorMessage.EndDateAfterStartDate })
     @Type(() => Date)
     public lastLessonEndsAt: Date;
 
