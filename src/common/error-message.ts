@@ -11,4 +11,9 @@ export enum ErrorMessage {
     RecurrenceEndRequired = 'Recurrence end is required',
     RecurrenceEndAfterEnd = 'Recurrence end must be after end date',
     DurationRequired = 'Duration is required',
+    LessonRequired = 'Lesson is required',
+    LessonNotExist = 'Lesson does not exist',
+    OldDateRequired = 'Old date is required',
+    NewDateRequired = 'New date is required',
+    LessonNotAtThisDate = 'The lesson does not occur at this time',
 }

@@ -1,12 +1,11 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Days, RecurrenceType, RecurrenceTypeMapper } from 'src/common';
+import { Days, RecurrenceType } from 'src/common';
 import { DateWithDurationInterface } from 'src/interface';
-import { RRuleWithExcludedDates } from 'src/utilities';
 import { EditedDate, EditedDateSchema } from './edited-date.schema';
 
 @Schema({ timestamps: true })
-export class Lesson {
+export class Lesson extends Document {
 
     @Prop({ required: true })
     userId: number;
