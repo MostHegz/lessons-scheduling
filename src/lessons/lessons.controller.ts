@@ -1,4 +1,4 @@
-import { Body, Controller, HttpException, InternalServerErrorException, Logger, Post, Put } from '@nestjs/common';
+import { Body, Controller, Logger, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Constants } from 'src/common';
 import { AddLessonDto, UpdateLessonDto } from './dto/request';
@@ -22,10 +22,7 @@ export class LessonsController {
             return this.lessonsService.addLesson(addLessonDto);
         } catch (error) {
             this.logger.error(error);
-            if (error instanceof HttpException) {
-                throw error;
-            }
-            throw new InternalServerErrorException();
+            throw error;
         }
     }
 
@@ -38,10 +35,7 @@ export class LessonsController {
             return this.lessonsService.updateLesson(updateLessonDto);
         } catch (error) {
             this.logger.error(error);
-            if (error instanceof HttpException) {
-                throw error;
-            }
-            throw new InternalServerErrorException();
+            throw error;
         }
     }
 
