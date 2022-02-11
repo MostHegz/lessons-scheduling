@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { EditedDate, EditedDateSchema } from './data/edited-date.schema';
 import { Lesson, LessonSchema } from './data/lessons.schema';
 import { LessonsController } from './lessons.controller';
+import { LessonRepository } from './lessons.repository';
 import { LessonsService } from './lessons.service';
 
 @Module({
@@ -13,6 +14,6 @@ import { LessonsService } from './lessons.service';
     ])
   ],
   controllers: [LessonsController],
-  providers: [LessonsService]
+  providers: [LessonsService, LessonRepository]
 })
 export class LessonsModule { }
