@@ -1,6 +1,6 @@
 export class Constants {
     public static MONGODB_PORT = '27017';
-    public static MONGODB_CONNECTION = `mongodb://localhost:${Constants.MONGODB_PORT}/lessons`;
+    public static MONGODB_CONNECTION = `mongodb://mongodb:${Constants.MONGODB_PORT}/lessons`;
 
     // Swagger
     public static API_TITLE = 'Lessons Scheduling API';

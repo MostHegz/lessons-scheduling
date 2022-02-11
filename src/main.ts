@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerCustomOptions, SwaggerModule } from '@nestjs/swagger';
@@ -7,6 +7,8 @@ import { Constants } from './common/constants';
 import { SuccessResponseInterceptor } from './utilities';
 
 async function bootstrap() {
+  const logger = new Logger('bootstrap');
+
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
@@ -39,5 +41,8 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, document, options);
   await app.startAllMicroservicesAsync();
   await app.listen(3001);
+
+  logger.log(`App is listening on port 3001`);
+  logger.log(`Check API documentation here ===> http://localhost:3001/swagger`);
 }
 bootstrap();
