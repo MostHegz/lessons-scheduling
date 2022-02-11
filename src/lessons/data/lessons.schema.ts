@@ -1,9 +1,13 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { RepeatedIntervals, RepeatedIntervalsSchema } from './repeated-intervals.schema';
+import { Days, RecurrenceType, RecurrenceTypeMapper } from 'src/common';
+import { DateWithDurationInterface } from 'src/interface';
+import { RRuleWithExcludedDates } from 'src/utilities';
+import { DateExclusion, DateExclusionSchema } from './exclusion-date.schema';
 
 @Schema({ timestamps: true })
-export class Lesson extends Document {
+export class Lesson {
+
     @Prop({ required: true })
     userId: number;
 
@@ -13,14 +17,25 @@ export class Lesson extends Document {
     @Prop({ required: true })
     description: string;
 
-    @Prop({ default: false })
-    isRepeated: boolean;
+    @Prop({ required: true, })
+    firstLessonStartsAt: Date;
 
-    @Prop({ type: [RepeatedIntervalsSchema] })
-    repeatedIntervals: RepeatedIntervals[];
+    @Prop({ default: null })
+    lastLessonEndsAt: Date;
 
-    @Prop([Date])
-    excludedDates: Date[];
+    @Prop({ required: true })
+    recurrence: RecurrenceType;
+
+    @Prop({ type: [String], enum: Days })
+    recurrenceDays: Days[];
+
+    @Prop({ required: true })
+    durationInMilliSeconds: number;
+
+    @Prop({ type: [DateExclusionSchema] })
+    excludedDates: DateExclusion[];
+
+    occursAt: DateWithDurationInterface[] = [];
 }
 
 export const LessonSchema = SchemaFactory.createForClass(Lesson);
