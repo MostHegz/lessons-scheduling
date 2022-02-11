@@ -7,5 +7,5 @@ export {
     SuccessResponseInterceptor,
     IsGreaterThan,
     RRuleWithExcludedDates,
-    MapperHelper
+    MapperHelper,
 };
