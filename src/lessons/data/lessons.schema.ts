@@ -1,12 +1,11 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Days, RecurrenceType, RecurrenceTypeMapper } from 'src/common';
+import { Days, RecurrenceType } from 'src/common';
 import { DateWithDurationInterface } from 'src/interface';
-import { RRuleWithExcludedDates } from 'src/utilities';
-import { DateExclusion, DateExclusionSchema } from './exclusion-date.schema';
+import { EditedDate, EditedDateSchema } from './edited-date.schema';
 
 @Schema({ timestamps: true })
-export class Lesson {
+export class Lesson extends Document {
 
     @Prop({ required: true })
     userId: number;
@@ -32,8 +31,11 @@ export class Lesson {
     @Prop({ required: true })
     durationInMilliSeconds: number;
 
-    @Prop({ type: [DateExclusionSchema] })
-    excludedDates: DateExclusion[];
+    @Prop({ type: [EditedDateSchema] })
+    editedDates: EditedDate[];
+
+    @Prop([Date])
+    excludedDates: Date[];
 
     occursAt: DateWithDurationInterface[] = [];
 }

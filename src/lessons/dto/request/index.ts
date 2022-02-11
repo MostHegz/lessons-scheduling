@@ -1,5 +1,7 @@
 import { AddLessonDto } from './add-lesson.dto';
+import { UpdateLessonDto } from './update-lesson.dto';
 
 export {
-    AddLessonDto
+    AddLessonDto,
+    UpdateLessonDto
 };

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { RecurrenceType } from 'src/common';
 import { DateResponse } from './date.response';
 
@@ -10,6 +10,7 @@ export class LessonResponse {
         required: true
     })
     @Expose()
+    @Transform(({ obj }) => obj?._id)
     public id: string;
 
     @ApiProperty({
