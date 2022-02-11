@@ -44,4 +44,8 @@ export class LessonRepository {
             ]
         });
     }
+
+    public async deleteLesson(lesson: Lesson) {
+        return this.lessonModel.findOneAndDelete({ _id: lesson.id });
+    }
 }

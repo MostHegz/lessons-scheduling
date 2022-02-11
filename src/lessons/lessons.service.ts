@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { ErrorMessage, LessonUpdateType, RecurrenceType } from 'src/common';
-import { BetweenDatesInterface } from 'src/interface';
+import { ErrorMessage, LessonDeleteType, LessonUpdateType, RecurrenceType, SuccessMessage } from 'src/common';
+import { BetweenDatesInterface, DateWithDurationInterface } from 'src/interface';
 import { MapperHelper, RRuleWithExcludedDates } from 'src/utilities';
 import { Lesson } from './data/lessons.schema';
-import { AddLessonDto, GetLessonsDto, UpdateLessonDto } from './dto/request';
+import { AddLessonDto, DeleteLessonDto, GetLessonsDto, UpdateLessonDto } from './dto/request';
 import { LessonListResponse, LessonResponse } from './dto/response';
 import { LessonRepository } from './lessons.repository';
 
@@ -41,10 +41,7 @@ export class LessonsService {
     public async updateLesson(updateLessonDto: UpdateLessonDto): Promise<LessonResponse> {
         return new Promise(async (resolve, reject) => {
             try {
-                const lesson = await this.lessonRepository.getLessonById(updateLessonDto.lessonId);
-                if (!lesson) {
-                    throw new HttpException({ key: ErrorMessage.LessonRequired }, HttpStatus.NOT_FOUND);
-                }
+                const lesson = await this.checkIfLessonExist(updateLessonDto.lessonId);
 
                 if (updateLessonDto.recurrence !== RecurrenceType.Weekly) {
                     updateLessonDto.recurrenceDays = [];
@@ -68,24 +65,16 @@ export class LessonsService {
                         break;
 
                     case LessonUpdateType.Single:
-                    case LessonUpdateType.DeleteSingle:
-                        const oldLessonWithDates = this.mapLessonDates(lesson);
-                        const foundDate = oldLessonWithDates.occursAt.find(old => old.date.toDateString() === updateLessonDto.oldDate.toDateString());
-                        if (!foundDate) {
-                            throw new HttpException({ key: ErrorMessage.LessonNotAtThisDate }, HttpStatus.NOT_FOUND);
-                        }
-
+                        const { foundDate } = this.findDateInLesson(lesson, updateLessonDto.oldDate);
                         if (foundDate.date.getTime() > lesson.lastLessonEndsAt.getTime()) {
                             lesson.lastLessonEndsAt = new Date(foundDate.date.getTime() + foundDate.durationInMilliSeconds);
                         }
                         lesson.excludedDates.push(updateLessonDto.oldDate);
 
-                        if (updateLessonDto.type === LessonUpdateType.Single) {
-                            lesson.editedDates.push({
-                                date: updateLessonDto.newDate ? updateLessonDto.newDate : updateLessonDto.oldDate,
-                                durationInMilliSeconds: updateLessonDto.durationInMilliSeconds
-                            });
-                        }
+                        lesson.editedDates.push({
+                            date: updateLessonDto.newDate ? updateLessonDto.newDate : updateLessonDto.oldDate,
+                            durationInMilliSeconds: updateLessonDto.durationInMilliSeconds
+                        });
                         break;
 
                 }
@@ -111,6 +100,75 @@ export class LessonsService {
                 reject(error);
             }
         });
+    }
+
+    public async deleteLesson(deleteLessonDto: DeleteLessonDto): Promise<LessonResponse | string> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const lesson = await this.checkIfLessonExist(deleteLessonDto.lessonId);
+                const deletedLessonResponse = SuccessMessage.LessonDeletedSuccessfully;
+
+                switch (deleteLessonDto.type) {
+                    case LessonDeleteType.Single: {
+                        if (lesson.recurrence === RecurrenceType.None) {
+                            await this.lessonRepository.deleteLesson(lesson);
+                            return resolve(deletedLessonResponse);
+                        } else {
+                            const { foundDate, lessonWithDate } = this.findDateInLesson(lesson, deleteLessonDto.dateToDelete);
+
+                            if (foundDate.date.getTime() === lesson.lastLessonEndsAt.getTime()) {
+                                lesson.lastLessonEndsAt = foundDate.date;
+
+                            } else if (foundDate.date.getTime() === lesson.firstLessonStartsAt.getTime()) {
+                                lesson.firstLessonStartsAt = lessonWithDate.occursAt[1].date;
+
+                            } else {
+                                lesson.excludedDates.push(deleteLessonDto.dateToDelete);
+                            }
+                        }
+                        break;
+                    }
+                    case LessonDeleteType.Following: {
+                        if (lesson.recurrence === RecurrenceType.None) {
+                            throw new HttpException({ key: ErrorMessage.LessonNotExist }, HttpStatus.NOT_FOUND);
+                        }
+                        const { foundDate } = this.findDateInLesson(lesson, deleteLessonDto.dateToDelete);
+                        lesson.lastLessonEndsAt = foundDate.date;
+                        break;
+                    }
+                    case LessonDeleteType.All: {
+                        await this.lessonRepository.deleteLesson(lesson);
+                        return resolve(deletedLessonResponse);
+                        break;
+                    }
+                }
+                const updatedLesson = await this.lessonRepository.updateLesson(lesson);
+                const lessonWithDates = this.mapLessonDates(updatedLesson);
+                const response = MapperHelper.toClient(LessonResponse, lessonWithDates);
+                resolve(response);
+            } catch (error) {
+                this.logger.error(error);
+                reject(error);
+            }
+        });
+    }
+
+    private async checkIfLessonExist(lessonId: string): Promise<Lesson> {
+        const lesson = await this.lessonRepository.getLessonById(lessonId);
+        if (!lesson) {
+            throw new HttpException({ key: ErrorMessage.LessonNotExist }, HttpStatus.NOT_FOUND);
+        }
+        return lesson;
+    }
+
+    private findDateInLesson(lesson: Lesson, date: Date): { foundDate: DateWithDurationInterface, lessonWithDate: Lesson } {
+        const oldLessonWithDates = this.mapLessonDates(lesson);
+        const foundDate = oldLessonWithDates.occursAt.find(
+            old => old.date.toDateString() === date.toDateString());
+        if (!foundDate) {
+            throw new HttpException({ message: ErrorMessage.LessonNotAtThisDate }, HttpStatus.NOT_FOUND);
+        }
+        return { foundDate, lessonWithDate: oldLessonWithDates };
     }
 
     private mapLessonDates(lesson: Lesson, betweenDates?: BetweenDatesInterface): Lesson {

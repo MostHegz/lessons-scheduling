@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Logger, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Constants } from 'src/common';
-import { AddLessonDto, GetLessonsDto, UpdateLessonDto } from './dto/request';
+import { AddLessonDto, DeleteLessonDto, GetLessonsDto, UpdateLessonDto } from './dto/request';
 import { LessonListResponse, LessonResponse } from './dto/response';
 import { LessonsService } from './lessons.service';
 
@@ -33,6 +33,19 @@ export class LessonsController {
         try {
             // TODO: get user from token and add it to the get lesson query
             return this.lessonsService.updateLesson(updateLessonDto);
+        } catch (error) {
+            this.logger.error(error);
+            throw error;
+        }
+    }
+
+    @Delete(`${Constants.DELETE_PATH}`)
+    @ApiOperation({ summary: 'Delete lesson', tags: [Constants.LESSON] })
+    @ApiResponse({ status: 200, description: 'Lesson Deleted', type: LessonResponse })
+    async deleteLesson(@Body() deleteLessonDto: DeleteLessonDto): Promise<LessonResponse | string> {
+        try {
+            // TODO: get user from token and add it to the get lesson query
+            return this.lessonsService.deleteLesson(deleteLessonDto);
         } catch (error) {
             this.logger.error(error);
             throw error;

@@ -19,6 +19,7 @@ export class Constants {
     // CRUD Paths
     public static ADD_PATH = 'add';
     public static UPDATE_PATH = 'update';
+    public static DELETE_PATH = 'delete';
     public static BY_ID_PATH = '/:id';
 
     // Time intervalse
