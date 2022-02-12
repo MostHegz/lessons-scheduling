@@ -7,15 +7,6 @@ import { IsGreaterThan } from 'src/utilities';
 export class AddLessonDto {
 
     @ApiProperty({
-        example: 2,
-        description: 'user id',
-        required: true
-    })
-    @IsNotEmpty({ message: ErrorMessage.UserRequired })
-    @Type(() => Number)
-    public userId: number;
-
-    @ApiProperty({
         example: 'Lesson Title',
         description: 'Lesson title',
         required: true

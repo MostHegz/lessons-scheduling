@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { RecurrenceType, LessonUpdateType, LessonDeleteType, ErrorMessage, SuccessMessage } from 'src/data/enum';
 import { Lesson } from 'src/data/model';
 import { LessonRepository } from 'src/data/repository';
-import { BetweenDatesInterface, DateWithDurationInterface } from 'src/interface';
+import { BetweenDatesInterface, DateWithDurationInterface, JwtPayloadInterface } from 'src/interface';
 import { MapperHelper, RRuleWithExcludedDates } from 'src/utilities';
 import { AddLessonDto, DeleteLessonDto, GetLessonsDto, UpdateLessonDto } from '../../dto/request';
 import { LessonListResponse, LessonResponse } from '../../dto/response';
@@ -14,7 +14,7 @@ export class LessonsService {
         private readonly lessonRepository: LessonRepository
     ) { }
 
-    public async addLesson(addLessonDto: AddLessonDto): Promise<LessonResponse> {
+    public async addLesson(addLessonDto: AddLessonDto, token: JwtPayloadInterface): Promise<LessonResponse> {
         return new Promise(async (resolve, reject) => {
             try {
                 // TODO: get user id from token instead of request body
@@ -27,7 +27,7 @@ export class LessonsService {
                     addLessonDto.lastLessonEndsAt = new Date(firstLessonStartsAt + addLessonDto.durationInMilliSeconds);
                 }
 
-                const addedLesson = await this.lessonRepository.addLesson(addLessonDto);
+                const addedLesson = await this.lessonRepository.addLesson(addLessonDto, token.userId);
                 const lessonWithDates = this.mapLessonDates(addedLesson);
                 const response = MapperHelper.toClient(LessonResponse, lessonWithDates);
                 resolve(response);
@@ -38,10 +38,10 @@ export class LessonsService {
         });
     }
 
-    public async updateLesson(updateLessonDto: UpdateLessonDto): Promise<LessonResponse> {
+    public async updateLesson(updateLessonDto: UpdateLessonDto, token: JwtPayloadInterface): Promise<LessonResponse> {
         return new Promise(async (resolve, reject) => {
             try {
-                const lesson = await this.checkIfLessonExist(updateLessonDto.lessonId);
+                const lesson = await this.checkIfLessonExist(updateLessonDto.lessonId, token.userId);
 
                 if (updateLessonDto.recurrence !== RecurrenceType.Weekly) {
                     updateLessonDto.recurrenceDays = [];
@@ -89,10 +89,10 @@ export class LessonsService {
         });
     }
 
-    public async getLessonsBetweenDates(getLessonsDto: GetLessonsDto): Promise<LessonListResponse[]> {
+    public async getLessonsBetweenDates(getLessonsDto: GetLessonsDto, token: JwtPayloadInterface): Promise<LessonListResponse[]> {
         return new Promise(async (resolve, reject) => {
             try {
-                const lessons = await this.lessonRepository.getLessonsBetweenDates(getLessonsDto);
+                const lessons = await this.lessonRepository.getLessonsBetweenDates(getLessonsDto, token.userId);
                 const lessonsWithDates = this.mapLessonsToListResponse(lessons, getLessonsDto);
                 resolve(lessonsWithDates);
             } catch (error) {
@@ -102,10 +102,10 @@ export class LessonsService {
         });
     }
 
-    public async deleteLesson(deleteLessonDto: DeleteLessonDto): Promise<LessonResponse | string> {
+    public async deleteLesson(deleteLessonDto: DeleteLessonDto, token: JwtPayloadInterface): Promise<LessonResponse | string> {
         return new Promise(async (resolve, reject) => {
             try {
-                const lesson = await this.checkIfLessonExist(deleteLessonDto.lessonId);
+                const lesson = await this.checkIfLessonExist(deleteLessonDto.lessonId, token.userId);
                 const deletedLessonResponse = SuccessMessage.LessonDeletedSuccessfully;
 
                 switch (deleteLessonDto.type) {
@@ -153,8 +153,8 @@ export class LessonsService {
         });
     }
 
-    private async checkIfLessonExist(lessonId: string): Promise<Lesson> {
-        const lesson = await this.lessonRepository.getLessonById(lessonId);
+    private async checkIfLessonExist(lessonId: string, userId: number): Promise<Lesson> {
+        const lesson = await this.lessonRepository.getUserLessonById(lessonId, userId);
         if (!lesson) {
             throw new HttpException({ message: ErrorMessage.LessonNotExist }, HttpStatus.NOT_FOUND);
         }

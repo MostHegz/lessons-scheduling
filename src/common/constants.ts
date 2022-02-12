@@ -25,4 +25,7 @@ export class Constants {
     // Time intervalse
     public static DAY_TIME_INTERVAL = 24 * 60 * 60 * 1000;
     public static WEEK_TIME_INTERVAL = 7 * 24 * 60 * 60 * 1000;
+
+    // JWT KEY
+    public static JWT_SECRET_KEY = 'w#Ey*Uf6=zmr=V4WQD@NZYg4Jnpzr9eF=CS8PLncEuQDmruJc$exu#X3@cJ&bV*@';
 }
