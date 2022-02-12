@@ -1,3 +1,4 @@
+import { GetToken } from './decorators/get-token.decorator';
 import { IsGreaterThan } from './decorators/is-greater-than.decorator';
 import { AllExceptionsFilter } from './exception-filter';
 import { MapperHelper } from './mapper.helper';
@@ -9,5 +10,6 @@ export {
     IsGreaterThan,
     RRuleWithExcludedDates,
     MapperHelper,
-    AllExceptionsFilter
+    AllExceptionsFilter,
+    GetToken
 };

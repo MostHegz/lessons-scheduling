@@ -18,9 +18,8 @@ async function bootstrap() {
   // TODO: Enable cors only for trusted frontend urls
   app.enableCors();
 
-  app.connectMicroservice({
-    transport: Transport.TCP,
-  });
+  app.connectMicroservice({ transport: Transport.TCP });
+
   const config = new DocumentBuilder()
     .setTitle(Constants.API_TITLE)
     .addTag(Constants.API_TAG)

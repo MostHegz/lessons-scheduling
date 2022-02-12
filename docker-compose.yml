@@ -16,7 +16,6 @@ services:
       - mongodb
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
     restart: unless-stopped
   mongodb:
     image : mongo:latest
@@ -43,7 +42,6 @@ services:
       - mongodb
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
     restart: unless-stopped
 
 networks:
