@@ -1,4 +1,4 @@
-import { RecurrenceType } from 'src/common';
+import { RecurrenceType } from 'src/data/enum';
 
 export interface ExpandedLessonsInterface {
     id: string;

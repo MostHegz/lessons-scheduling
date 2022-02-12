@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsDate } from 'class-validator';
-import { ErrorMessage } from 'src/common';
+import { ErrorMessage } from 'src/data/enum';
 import { BetweenDatesInterface } from 'src/interface';
 import { IsGreaterThan } from 'src/utilities';
 

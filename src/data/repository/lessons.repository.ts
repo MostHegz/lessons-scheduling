@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Lesson } from './data/lessons.schema';
-import { AddLessonDto, GetLessonsDto } from './dto/request';
+import { BetweenDatesInterface } from 'src/interface';
+import { AddLessonDto } from '../../dto/request';
+import { Lesson } from '../model';
 
 
 @Injectable()
@@ -26,19 +27,19 @@ export class LessonRepository {
         return this.lessonModel.findOneAndUpdate({ _id: lesson.id }, lesson, { returnOriginal: false });
     }
 
-    public async getLessonsBetweenDates(getLessonsDto: GetLessonsDto): Promise<Lesson[]> {
+    public async getLessonsBetweenDates(betweenDates: BetweenDatesInterface): Promise<Lesson[]> {
         return this.lessonModel.find({
             $nor: [
                 {
                     $and: [
-                        { 'firstLessonStartsAt': { $lte: getLessonsDto.from } },
-                        { 'lastLessonEndsAt': { $lte: getLessonsDto.from } },
+                        { 'firstLessonStartsAt': { $lte: betweenDates.from } },
+                        { 'lastLessonEndsAt': { $lte: betweenDates.from } },
                     ]
                 },
                 {
                     $and: [
-                        { 'firstLessonStartsAt': { $gte: getLessonsDto.to } },
-                        { 'lastLessonEndsAt': { $gte: getLessonsDto.to } },
+                        { 'firstLessonStartsAt': { $gte: betweenDates.to } },
+                        { 'lastLessonEndsAt': { $gte: betweenDates.to } },
                     ]
                 }
             ]

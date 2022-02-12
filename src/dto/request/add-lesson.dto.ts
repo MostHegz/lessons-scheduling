@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsDate, IsDefined, IsEnum, IsNotEmpty, ValidateIf } from 'class-validator';
-import { Days, ErrorMessage, RecurrenceType } from 'src/common';
+import { Days, ErrorMessage, RecurrenceType } from 'src/data/enum';
 import { IsGreaterThan } from 'src/utilities';
 
 export class AddLessonDto {
