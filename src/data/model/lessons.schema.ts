@@ -1,7 +1,7 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Days, RecurrenceType } from 'src/common';
 import { DateWithDurationInterface } from 'src/interface';
+import { RecurrenceType, Days } from '../enum';
 import { EditedDate, EditedDateSchema } from './edited-date.schema';
 
 @Schema({ timestamps: true })

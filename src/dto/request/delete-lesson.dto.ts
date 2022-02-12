@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsDate, IsEnum, IsMongoId, ValidateIf } from 'class-validator';
-import { ErrorMessage, LessonDeleteType } from 'src/common';
+import { ErrorMessage, LessonDeleteType } from 'src/data/enum';
 
 export class DeleteLessonDto {
 

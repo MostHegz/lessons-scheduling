@@ -1,7 +1,7 @@
 import { RRule, RRuleSet } from 'rrule';
-import { Days, RecurrenceType, RecurrenceTypeMapper } from 'src/common';
-import { BetweenDatesInterface, DateWithDurationInterface, ExpandedLessonsInterface } from 'src/interface';
-import { EditedDate } from 'src/lessons/data/edited-date.schema';
+import { Days, RecurrenceType, RecurrenceTypeMapper } from 'src/data/enum';
+import { EditedDate } from 'src/data/model';
+import { BetweenDatesInterface, DateWithDurationInterface } from 'src/interface';
 
 export class RRuleWithExcludedDates extends RRuleSet {
 

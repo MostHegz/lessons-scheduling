@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EditedDate, EditedDateSchema } from './data/edited-date.schema';
-import { Lesson, LessonSchema } from './data/lessons.schema';
+import { EditedDate, EditedDateSchema, Lesson, LessonSchema } from 'src/data/model';
+import { LessonRepository } from 'src/data/repository';
 import { LessonsController } from './lessons.controller';
-import { LessonRepository } from './lessons.repository';
 import { LessonsService } from './lessons.service';
 
 @Module({

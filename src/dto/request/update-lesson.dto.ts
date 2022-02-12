@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsEnum, IsMongoId, IsOptional, ValidateIf } from 'class-validator';
-import { ErrorMessage, LessonUpdateType } from 'src/common';
+import { IsDate, IsEnum, IsMongoId, ValidateIf } from 'class-validator';
+import { ErrorMessage, LessonUpdateType } from 'src/data/enum';
 import { AddLessonDto } from './add-lesson.dto';
 
 export class UpdateLessonDto extends AddLessonDto {

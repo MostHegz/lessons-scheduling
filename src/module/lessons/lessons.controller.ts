@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Logger, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Constants } from 'src/common';
-import { AddLessonDto, DeleteLessonDto, GetLessonsDto, UpdateLessonDto } from './dto/request';
-import { LessonListResponse, LessonResponse } from './dto/response';
+import { AddLessonDto, DeleteLessonDto, GetLessonsDto, UpdateLessonDto } from '../../dto/request';
+import { LessonListResponse, LessonResponse } from '../../dto/response';
 import { LessonsService } from './lessons.service';
 
 

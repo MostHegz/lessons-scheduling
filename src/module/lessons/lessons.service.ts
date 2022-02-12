@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { ErrorMessage, LessonDeleteType, LessonUpdateType, RecurrenceType, SuccessMessage } from 'src/common';
+import { RecurrenceType, LessonUpdateType, LessonDeleteType, ErrorMessage, SuccessMessage } from 'src/data/enum';
+import { Lesson } from 'src/data/model';
+import { LessonRepository } from 'src/data/repository';
 import { BetweenDatesInterface, DateWithDurationInterface } from 'src/interface';
 import { MapperHelper, RRuleWithExcludedDates } from 'src/utilities';
-import { Lesson } from './data/lessons.schema';
-import { AddLessonDto, DeleteLessonDto, GetLessonsDto, UpdateLessonDto } from './dto/request';
-import { LessonListResponse, LessonResponse } from './dto/response';
-import { LessonRepository } from './lessons.repository';
+import { AddLessonDto, DeleteLessonDto, GetLessonsDto, UpdateLessonDto } from '../../dto/request';
+import { LessonListResponse, LessonResponse } from '../../dto/response';
 
 @Injectable()
 export class LessonsService {
