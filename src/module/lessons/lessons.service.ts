@@ -130,7 +130,7 @@ export class LessonsService {
                     }
                     case LessonDeleteType.Following: {
                         if (lesson.recurrence === RecurrenceType.None) {
-                            throw new HttpException({ key: ErrorMessage.LessonNotExist }, HttpStatus.NOT_FOUND);
+                            throw new HttpException({ message: ErrorMessage.LessonNotExist }, HttpStatus.NOT_FOUND);
                         }
                         const { foundDate } = this.findDateInLesson(lesson, deleteLessonDto.dateToDelete);
                         lesson.lastLessonEndsAt = foundDate.date;
@@ -156,7 +156,7 @@ export class LessonsService {
     private async checkIfLessonExist(lessonId: string): Promise<Lesson> {
         const lesson = await this.lessonRepository.getLessonById(lessonId);
         if (!lesson) {
-            throw new HttpException({ key: ErrorMessage.LessonNotExist }, HttpStatus.NOT_FOUND);
+            throw new HttpException({ message: ErrorMessage.LessonNotExist }, HttpStatus.NOT_FOUND);
         }
         return lesson;
     }
