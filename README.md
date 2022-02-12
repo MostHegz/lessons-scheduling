@@ -57,4 +57,4 @@ After running the App you can go to `localhost:3001/swagger` to check the availa
 
 # To do List
 
-1. Adding TCP gateway handling
+1. Adding TCP gateway handling for communication between microservices
