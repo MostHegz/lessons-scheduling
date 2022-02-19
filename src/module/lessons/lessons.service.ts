@@ -3,7 +3,7 @@ import { RecurrenceType, LessonUpdateType, LessonDeleteType, ErrorMessage, Succe
 import { Lesson } from 'src/data/model';
 import { LessonRepository } from 'src/data/repository';
 import { BetweenDatesInterface, DateWithDurationInterface, JwtPayloadInterface } from 'src/interface';
-import { MapperHelper, RRuleWithExcludedDates } from 'src/utilities';
+import { MapperHelper, RecurrenceDate } from 'src/utilities';
 import { AddLessonDto, DeleteLessonDto, GetLessonsDto, UpdateLessonDto } from '../../dto/request';
 import { LessonListResponse, LessonResponse } from '../../dto/response';
 
@@ -17,7 +17,6 @@ export class LessonsService {
     public async addLesson(addLessonDto: AddLessonDto, token: JwtPayloadInterface): Promise<LessonResponse> {
         return new Promise(async (resolve, reject) => {
             try {
-                // TODO: get user id from token instead of request body
                 if (addLessonDto.recurrence !== RecurrenceType.Weekly) {
                     addLessonDto.recurrenceDays = [];
                 }
@@ -178,7 +177,7 @@ export class LessonsService {
                 durationInMilliSeconds: lesson.durationInMilliSeconds
             }];
         } else {
-            const rruleDates = new RRuleWithExcludedDates(
+            const recurrenceDate = new RecurrenceDate(
                 lesson.firstLessonStartsAt,
                 lesson.lastLessonEndsAt,
                 lesson.editedDates,
@@ -187,17 +186,14 @@ export class LessonsService {
                 lesson.recurrenceDays,
                 lesson.recurrence
             );
-            if (betweenDates) {
-                lesson.occursAt = rruleDates.getBetween(betweenDates);
-            } else {
-                lesson.occursAt = rruleDates.getAll();
-            }
+            lesson.occursAt = recurrenceDate.getDates(betweenDates);
         }
         return lesson;
     }
 
     private mapLessonsToListResponse(lessons: Lesson[], betweenDates: BetweenDatesInterface): LessonListResponse[] {
         const lessonsListResponse: LessonListResponse[] = [];
+        // TODO: discuss with front end the ability of sending the lesson object with its dates to avoid O(N3)
         for (const lesson of lessons) {
             const lessonWithDates = this.mapLessonDates(lesson, betweenDates);
             for (const date of lessonWithDates.occursAt) {
