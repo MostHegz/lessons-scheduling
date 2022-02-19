@@ -1,6 +1,6 @@
 import { ErrorMessage } from './error-message';
 import { LessonUpdateType, LessonDeleteType } from './lesson';
-import { RecurrenceType, Days, RecurrenceTypeMapper } from './recurrence';
+import { RecurrenceType, Days, RecurrenceTypeMapper, MappedDays } from './recurrence';
 import { SuccessMessage } from './success-message';
 
 export {
@@ -10,5 +10,6 @@ export {
     RecurrenceTypeMapper,
     LessonUpdateType,
     LessonDeleteType,
-    SuccessMessage
+    SuccessMessage,
+    MappedDays,
 };

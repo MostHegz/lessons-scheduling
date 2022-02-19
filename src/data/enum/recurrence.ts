@@ -10,11 +10,21 @@ export enum RecurrenceTypeMapper {
 }
 
 export enum Days {
-    Sunday = 'SU',
-    Monday = 'MO',
-    Tuesday = 'TU',
-    Wednesday = 'WE',
-    Thursday = 'TH',
-    Friday = 'FR',
-    Saturday = 'SA'
+    Sunday = 'SUNDAY',
+    Monday = 'MONDAY',
+    Tuesday = 'TUESDAY',
+    Wednesday = 'WEDNESDAY',
+    Thursday = 'THURSDAY',
+    Friday = 'FRIDAY',
+    Saturday = 'SATURDAY'
+}
+
+export enum MappedDays {
+    SUNDAY = 0,
+    MONDAY = 1,
+    TUESDAY = 2,
+    WEDNESDAY = 3,
+    THURSDAY = 4,
+    FRIDAY = 5,
+    SATURDAY = 6
 }
